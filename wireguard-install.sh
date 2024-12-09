@@ -9,7 +9,11 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 function checkTUN() {
-	# @Todo: Implement TUN check, make sure user have exposed TUN to the container
+	if [ ! -e /dev/net/tun ]; then
+        echo "Error: /dev/net/tun does not exist."
+		echo "Please read README to setup your container properly."
+        exit 1
+    fi
 }
 
 function isRoot() {
