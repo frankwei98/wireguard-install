@@ -41,15 +41,15 @@ function checkOS() {
 	source /etc/os-release
 	OS="${ID}"
 	if [[ ${OS} == "debian" || ${OS} == "raspbian" ]]; then
-		if [[ ${VERSION_ID} -lt 10 ]]; then
-			echo "Your version of Debian (${VERSION_ID}) is not supported. Please use Debian 10 Buster or later"
+		if [[ ${VERSION_ID} -lt 11 ]]; then
+			echo "Your version of Debian (${VERSION_ID}) is not supported. Please use Debian 11 Bullseye or later"
 			exit 1
 		fi
 		OS=debian # overwrite if raspbian
 	elif [[ ${OS} == "ubuntu" ]]; then
 		RELEASE_YEAR=$(echo "${VERSION_ID}" | cut -d'.' -f1)
-		if [[ ${RELEASE_YEAR} -lt 18 ]]; then
-			echo "Your version of Ubuntu (${VERSION_ID}) is not supported. Please use Ubuntu 18.04 or later"
+		if [[ ${RELEASE_YEAR} -lt 20 ]]; then
+			echo "Your version of Ubuntu (${VERSION_ID}) is not supported. Please use Ubuntu 21 or later"
 			exit 1
 		fi
 	# feel free to hack
@@ -192,15 +192,17 @@ function installWireGuard() {
 	# Install WireGuard tools and module
 	if [[ ${OS} == 'ubuntu' ]] || [[ ${OS} == 'debian' && ${VERSION_ID} -gt 10 ]]; then
 		apt-get update
-		apt-get install -y wireguard iptables resolvconf qrencode
-	elif [[ ${OS} == 'debian' ]]; then
-		if ! grep -rqs "^deb .* buster-backports" /etc/apt/; then
-			echo "deb http://deb.debian.org/debian buster-backports main" >/etc/apt/sources.list.d/backports.list
-			apt-get update
-		fi
-		apt update
+		apt install -y wireguard-tools --no-install-recommends
 		apt-get install -y iptables resolvconf qrencode
-		apt-get install -y -t buster-backports wireguard
+	elif [[ ${OS} == 'debian' ]]; then
+		# if ! grep -rqs "^deb .* buster-backports" /etc/apt/; then
+		# 	echo "deb http://deb.debian.org/debian buster-backports main" >/etc/apt/sources.list.d/backports.list
+		# 	apt-get update
+		# fi
+		# apt update
+		# apt-get install -y iptables resolvconf qrencode
+		# apt-get install -y -t buster-backports wireguard
+		echo "No support for Debian 10 or below due to old kernel"
 	# Feel free to hack
 	# elif [[ ${OS} == 'fedora' ]]; then
 	# 	if [[ ${VERSION_ID} -lt 32 ]]; then

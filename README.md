@@ -9,10 +9,28 @@ The script is based on [angristan/wireguard-install](https://github.com/angrista
 
 ## Requirements
 
+### Kernel
+
+Linux kernel have to be greater than 5.6 that have kernel support for Wireguard
+
+You can test by `lsmod | grep wireguard`, for example in Debian 12:
+
+```bash
+root@wg-test:~# lsmod | grep wireguard
+wireguard             110592  0
+curve25519_x86_64      36864  1 wireguard
+libchacha20poly1305    20480  1 wireguard
+libcurve25519_generic    45056  2 curve25519_x86_64,wireguard
+ip6_udp_tunnel         16384  1 wireguard
+udp_tunnel             32768  1 wireguard
+```
+
+### Distros
+
 Supported distributions:
 
-- Debian >= 10 (Tested on Debian 12 container)
-- Ubuntu >= 18.04 (Not tested)
+- Debian >= 11 (Tested on Debian 12 container)
+- Ubuntu >= 21 (Not tested)
 
 ## Usage
 
