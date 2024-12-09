@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Secure WireGuard server installer
-# https://github.com/angristan/wireguard-install
+# Secure WireGuard server installer for container
+# https://github.com/frankwei98/wireguard-lxc-install
 
 RED='\033[0;31m'
 ORANGE='\033[0;33m'
@@ -69,8 +69,8 @@ function checkOS() {
 	# elif [[ -e /etc/arch-release ]]; then
 	# 	OS=arch
 	else
-		echo "Looks like you aren't running this installer on a Debian, Ubuntu.
-		echo  Fedora, CentOS, AlmaLinux, Oracle or Arch Linux system  are not supported for now. Feel free to hack and contribute."
+		echo "Looks like you aren't running this installer on a Debian, Ubuntu."
+		echo "RHEL(CentOS etc.) or Arch Linux system  are not supported for now. Feel free to hack and contribute."
 		exit 1
 	fi
 }
@@ -112,7 +112,7 @@ function initialCheck() {
 
 function installQuestions() {
 	echo "Welcome to the WireGuard installer!"
-	echo "The git repository is available at: https://github.com/frankwei98/wireguard-install"
+	echo "The git repository is available at: https://github.com/frankwei98/wireguard-lxc-install"
 	echo ""
 	echo "I need to ask you a few questions before starting the setup."
 	echo "You can keep the default options and just press enter if you are ok with them."
@@ -505,7 +505,7 @@ function uninstallWg() {
 
 function manageMenu() {
 	echo "Welcome to WireGuard-install!"
-	echo "The git repository is available at: https://github.com/frankwei98/wireguard-install"
+	echo "The git repository is available at: https://github.com/frankwei98/wireguard-lxc-install"
 	echo ""
 	echo "It looks like WireGuard is already installed."
 	echo ""
