@@ -115,12 +115,20 @@ function installQuestions() {
 	echo ""
 
 	# Detect public IPv4 or IPv6 address and pre-fill for the user
-	SERVER_PUB_IP=$(ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1)
+	# next line usually detect internal IPv4 address, i don't know how to fix it, just use IPv6
+	# SERVER_PUB_IP=$(ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1)
 	if [[ -z ${SERVER_PUB_IP} ]]; then
-		# Detect public IPv6 address
-		SERVER_PUB_IP=$(ip -6 addr | sed -ne 's|^.* inet6 \([^/]*\)/.* scope global.*$|\1|p' | head -1)
+		# Detect *public* IPv6 address, for now first digit of public IPv6 is '2'
+		# SERVER_PUB_IP=$(ip -6 addr | sed -ne 's|^.* inet6 \([^/]*\)/.* scope global.*$|\1|p' | head -1)
+		SERVER_PUB_IP=$(ip -6 addr | sed -ne 's|^.* inet6 \([2][^/]*\)/.* scope global.*$|\1|p' | head -1)
 	fi
-	read -rp "IPv4 or IPv6 public address: " -e -i "${SERVER_PUB_IP}" SERVER_PUB_IP
+	echo "I need you to provide the public IPv4 or IPv6 or domain address for clients to connect"
+	echo "If you using home broadband, since the IP address with change from time to time"
+	echo "It would be better for you to use domain with DDNS to keep track your address."
+	echo ""
+	echo "Most cellular network are IPv6 supported, mandated in 5G, so better to go IPv6."
+	echo "For IPv4, make sure you know what you are doing and it's not a internal / CGNAT address."
+	read -rp "Enter public IPv4 or IPv6 or FQDN: " -e -i "${SERVER_PUB_IP}" SERVER_PUB_IP
 
 	# Detect public interface and pre-fill for the user
 	SERVER_NIC="$(ip -4 route ls | grep default | grep -Po '(?<=dev )(\S+)' | head -1)"
@@ -140,6 +148,8 @@ function installQuestions() {
 		read -rp "Server WireGuard IPv6: " -e -i fd42:42:42::1 SERVER_WG_IPV6
 	done
 
+	echo "Please make sure you have configure your router firewall" 
+	echo "to open your PORT in UDP or it will block to connection from outside"
 	# Generate random number within private ports range
 	RANDOM_PORT=$(shuf -i49152-65535 -n1)
 	until [[ ${SERVER_PORT} =~ ^[0-9]+$ ]] && [ "${SERVER_PORT}" -ge 1 ] && [ "${SERVER_PORT}" -le 65535 ]; do
